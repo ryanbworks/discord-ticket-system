@@ -350,6 +350,30 @@ async function handleTicketCloseCancel(interaction) {
 async function handleTicketClaim(interaction, client) {
     await interaction.deferReply({ ephemeral: true });
 
+    // Verificar se o usuário é staff
+    const ticket = await getTicketByChannel(interaction.channel.id);
+    if (!ticket) {
+        await interaction.editReply({
+            embeds: [errorEmbed("❌ Erro", getMessage("errors", "ticketNotFound"))],
+        });
+        return;
+    }
+
+    const category = getCategory(ticket.category_id);
+    const member = interaction.member;
+
+    // Verificar se tem permissão (staff da categoria ou administrador)
+    const hasPermission =
+        member.permissions.has(PermissionFlagsBits.Administrator) ||
+        category?.staffRoles?.some(roleId => member.roles.cache.has(roleId));
+
+    if (!hasPermission) {
+        await interaction.editReply({
+            embeds: [errorEmbed("❌ Sem Permissão", "Apenas membros da staff podem assumir tickets.")],
+        });
+        return;
+    }
+
     const manager = getTicketManager(client);
     const result = await manager.claim(interaction.channel, interaction.user);
 
