@@ -4,6 +4,7 @@ import {
     ButtonStyle,
     EmbedBuilder,
     ModalBuilder,
+    PermissionFlagsBits,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
@@ -520,21 +521,19 @@ async function handleCategoryChange(interaction, client, ticketId, newCategoryId
         // Mover canal para nova categoria
         await channel.setParent(discordCategory.id);
 
-        // Atualizar permissões do canal para os novos staff roles usando PermissionFlagsBits
+        // Buscar o usuário do ticket para garantir que está no cache
+        const ticketUser = await interaction.guild.members.fetch(ticket.user_id).catch(() => null);
+
+        if (!ticketUser) {
+            console.error(`⚠️  Usuário ${ticket.user_id} não encontrado, não será possível atualizar permissões`);
+            // Continuar mesmo assim, só não adiciona permissão do usuário
+        }
+
+        // Atualizar permissões do canal
         const permissionOverwrites = [
             {
                 id: interaction.guild.id,
                 deny: [PermissionFlagsBits.ViewChannel],
-            },
-            {
-                id: ticket.user_id,
-                allow: [
-                    PermissionFlagsBits.ViewChannel,
-                    PermissionFlagsBits.SendMessages,
-                    PermissionFlagsBits.ReadMessageHistory,
-                    PermissionFlagsBits.AttachFiles,
-                    PermissionFlagsBits.EmbedLinks,
-                ],
             },
             {
                 id: client.user.id,
@@ -550,19 +549,39 @@ async function handleCategoryChange(interaction, client, ticketId, newCategoryId
             },
         ];
 
-        // Adicionar staff roles da nova categoria
-        for (const roleId of newCategory.staffRoles || []) {
+        // Adicionar permissão do usuário se foi encontrado
+        if (ticketUser) {
             permissionOverwrites.push({
-                id: roleId,
+                id: ticket.user_id,
                 allow: [
                     PermissionFlagsBits.ViewChannel,
                     PermissionFlagsBits.SendMessages,
                     PermissionFlagsBits.ReadMessageHistory,
                     PermissionFlagsBits.AttachFiles,
                     PermissionFlagsBits.EmbedLinks,
-                    PermissionFlagsBits.ManageMessages,
                 ],
             });
+        }
+
+        // Adicionar staff roles da nova categoria
+        for (const roleId of newCategory.staffRoles || []) {
+            try {
+                // Buscar role para garantir que está no cache
+                await interaction.guild.roles.fetch(roleId);
+                permissionOverwrites.push({
+                    id: roleId,
+                    allow: [
+                        PermissionFlagsBits.ViewChannel,
+                        PermissionFlagsBits.SendMessages,
+                        PermissionFlagsBits.ReadMessageHistory,
+                        PermissionFlagsBits.AttachFiles,
+                        PermissionFlagsBits.EmbedLinks,
+                        PermissionFlagsBits.ManageMessages,
+                    ],
+                });
+            } catch (error) {
+                console.error(`⚠️  Role ${roleId} não encontrado, pulando...`);
+            }
         }
 
         await channel.permissionOverwrites.set(permissionOverwrites);
