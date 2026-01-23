@@ -520,26 +520,32 @@ async function handleCategoryChange(interaction, client, ticketId, newCategoryId
         // Mover canal para nova categoria
         await channel.setParent(discordCategory.id);
 
-        // Atualizar permissões do canal para os novos staff roles
+        // Atualizar permissões do canal para os novos staff roles usando PermissionFlagsBits
         const permissionOverwrites = [
             {
                 id: interaction.guild.id,
-                deny: ["ViewChannel"],
+                deny: [PermissionFlagsBits.ViewChannel],
             },
             {
                 id: ticket.user_id,
-                allow: ["ViewChannel", "SendMessages", "ReadMessageHistory", "AttachFiles", "EmbedLinks"],
+                allow: [
+                    PermissionFlagsBits.ViewChannel,
+                    PermissionFlagsBits.SendMessages,
+                    PermissionFlagsBits.ReadMessageHistory,
+                    PermissionFlagsBits.AttachFiles,
+                    PermissionFlagsBits.EmbedLinks,
+                ],
             },
             {
                 id: client.user.id,
                 allow: [
-                    "ViewChannel",
-                    "SendMessages",
-                    "ReadMessageHistory",
-                    "ManageChannels",
-                    "ManageMessages",
-                    "AttachFiles",
-                    "EmbedLinks",
+                    PermissionFlagsBits.ViewChannel,
+                    PermissionFlagsBits.SendMessages,
+                    PermissionFlagsBits.ReadMessageHistory,
+                    PermissionFlagsBits.ManageChannels,
+                    PermissionFlagsBits.ManageMessages,
+                    PermissionFlagsBits.AttachFiles,
+                    PermissionFlagsBits.EmbedLinks,
                 ],
             },
         ];
@@ -549,12 +555,12 @@ async function handleCategoryChange(interaction, client, ticketId, newCategoryId
             permissionOverwrites.push({
                 id: roleId,
                 allow: [
-                    "ViewChannel",
-                    "SendMessages",
-                    "ReadMessageHistory",
-                    "AttachFiles",
-                    "EmbedLinks",
-                    "ManageMessages",
+                    PermissionFlagsBits.ViewChannel,
+                    PermissionFlagsBits.SendMessages,
+                    PermissionFlagsBits.ReadMessageHistory,
+                    PermissionFlagsBits.AttachFiles,
+                    PermissionFlagsBits.EmbedLinks,
+                    PermissionFlagsBits.ManageMessages,
                 ],
             });
         }
