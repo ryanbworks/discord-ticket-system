@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 import { formatTime } from "../../utils/embed.js";
 import { getLogger } from "../../utils/logger.js";
+import { discordApiCall } from "../../utils/retry.js";
 import {
     checkBusinessHours,
     getCategory,

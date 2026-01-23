@@ -18,7 +18,7 @@ function createPool() {
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
-        timezone: "+00:00",
+        timezone: "Z", // Força UTC
     });
 }
 
@@ -297,11 +297,12 @@ export async function updateTicketStatus(channelId, status, closedBy = null, rea
         const [result] = await pool.query(
             `
             UPDATE tickets 
-            SET status = ?, closed_at = NOW(), closed_by = ?, close_reason = ?
+            SET status = ?, closed_at = UTC_TIMESTAMP(), closed_by = ?, close_reason = ?
             WHERE channel_id = ?
         `,
             [status, closedBy, reason, channelId],
         );
+        console.log(`✅ Status do ticket atualizado para 'closed': ${channelId}`);
         return result;
     }
 
@@ -619,6 +620,10 @@ export async function setTicketAlert(ticketId, alertedBy, durationMinutes, reaso
 
         const expiresAt = new Date(Date.now() + durationMinutes * 60000);
 
+        console.log(
+            `📝 Criando alerta: Ticket ID ${ticketId}, Expira em: ${expiresAt.toISOString()}, NOW seria: ${new Date().toISOString()}`,
+        );
+
         // Cancelar alertas anteriores pendentes
         await connection.query(
             `UPDATE ticket_alerts SET status = 'cancelled' WHERE ticket_id = ? AND status = 'pending'`,
@@ -634,6 +639,7 @@ export async function setTicketAlert(ticketId, alertedBy, durationMinutes, reaso
         );
 
         await connection.commit();
+        console.log(`✅ Alerta salvo no banco com ID: ${result.insertId}`);
         return result;
     } catch (error) {
         await connection.rollback();
@@ -665,7 +671,7 @@ export async function getExpiredAlerts() {
         SELECT a.*, t.channel_id, t.guild_id, t.user_id, t.ticket_number
         FROM ticket_alerts a
         JOIN tickets t ON a.ticket_id = t.id
-        WHERE a.status = 'pending' AND a.expires_at <= NOW()
+        WHERE a.status = 'pending' AND a.expires_at <= UTC_TIMESTAMP()
         AND t.status = 'open'
     `,
     );

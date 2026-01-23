@@ -20,10 +20,10 @@ export function startAlertChecker(client) {
 
     console.log("⏰ Sistema de alertas iniciado.");
 
-    // Verificar a cada 1 minuto
+    // Verificar a cada 30 segundos para mais responsividade
     alertCheckInterval = setInterval(() => {
         checkExpiredAlerts(client);
-    }, 60000); // 60 segundos
+    }, 30000); // 30 segundos
 
     // Verificar imediatamente ao iniciar
     checkExpiredAlerts(client);
@@ -48,8 +48,6 @@ async function checkExpiredAlerts(client) {
     try {
         const expiredAlerts = await getExpiredAlerts();
 
-        if (expiredAlerts.length === 0) return;
-
         const config = getConfig();
         const alertsConfig = config.alerts || {};
         const colors = getColors();
@@ -57,6 +55,8 @@ async function checkExpiredAlerts(client) {
 
         for (const alert of expiredAlerts) {
             try {
+                console.log(`⏰ Processando alerta expirado: Ticket #${alert.ticket_number} (ID: ${alert.id})`);
+
                 // Buscar o canal
                 const channel = await client.channels.fetch(alert.channel_id).catch(() => null);
 

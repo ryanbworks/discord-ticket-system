@@ -13,10 +13,10 @@ export const data = new SlashCommandBuilder()
                 .setDescription("Tempo em minutos para o fechamento (padrão: 30)")
                 .setRequired(false)
                 .setMinValue(1)
-                .setMaxValue(1440) // Máximo 24 horas
+                .setMaxValue(1440), // Máximo 24 horas
     )
     .addStringOption(option =>
-        option.setName("motivo").setDescription("Motivo do alerta (opcional)").setRequired(false)
+        option.setName("motivo").setDescription("Motivo do alerta (opcional)").setRequired(false),
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
@@ -61,7 +61,7 @@ export async function execute(interaction, client) {
             embeds: [
                 errorEmbed(
                     "⚠️ Alerta Ativo",
-                    `Já existe um alerta ativo para este ticket.\nTempo restante: **${timeLeft} minuto(s)**`
+                    `Já existe um alerta ativo para este ticket.\nTempo restante: **${timeLeft} minuto(s)**`,
                 ),
             ],
             ephemeral: true,
@@ -73,10 +73,12 @@ export async function execute(interaction, client) {
     const motivo = interaction.options.getString("motivo") || "Aguardando resposta do usuário";
     const colors = getColors();
 
-    // Calcular tempo de expiração
+    console.log(`🔔 Comando /alertar executado: Ticket ID ${ticket.id}, Tempo: ${tempoMinutos}min`);
+
+    // Calcular tempo de expiração em UTC
     const expiresAt = new Date(Date.now() + tempoMinutos * 60000);
 
-    // Salvar alerta no banco
+    // Salvar alerta no banco (já em UTC)
     await setTicketAlert(ticket.id, interaction.user.id, tempoMinutos, motivo);
 
     // Buscar o usuário do ticket
@@ -88,12 +90,12 @@ export async function execute(interaction, client) {
         .setTitle("⚠️ Alerta de Inatividade")
         .setDescription(
             alertConfig.alertMessage ||
-                `**{user}**, este ticket será **fechado automaticamente** em **{tempo}** se não houver resposta.\n\nPor favor, responda para manter o ticket aberto.`
+                `**{user}**, este ticket será **fechado automaticamente** em **{tempo}** se não houver resposta.\n\nPor favor, responda para manter o ticket aberto.`,
         )
         .addFields(
             { name: "⏰ Tempo para Fechamento", value: `${tempoMinutos} minuto(s)`, inline: true },
             { name: "📝 Motivo", value: motivo, inline: true },
-            { name: "👮 Alertado por", value: interaction.user.toString(), inline: true }
+            { name: "👮 Alertado por", value: interaction.user.toString(), inline: true },
         )
         .setFooter({ text: `Expira em: ${expiresAt.toLocaleString("pt-BR")}` })
         .setTimestamp();
@@ -115,7 +117,7 @@ export async function execute(interaction, client) {
         embeds: [
             successEmbed(
                 "✅ Alerta Enviado",
-                `O ticket será fechado automaticamente em **${tempoMinutos} minuto(s)** se o usuário não responder.`
+                `O ticket será fechado automaticamente em **${tempoMinutos} minuto(s)** se o usuário não responder.`,
             ),
         ],
         ephemeral: true,
