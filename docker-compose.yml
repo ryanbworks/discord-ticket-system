@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+    fozbot:
+        build: .
+        container_name: fozbot-discord
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            - NODE_ENV=production
+        volumes:
+            # Persistir dados
+            - ./data:/app/data
+            # Persistir configuração
+            - ./config.yml:/app/config.yml
+        networks:
+            - fozbot-network
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+
+networks:
+    fozbot-network:
+        driver: bridge
