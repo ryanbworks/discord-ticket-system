@@ -5,7 +5,7 @@ import {
     SlashCommandBuilder,
     StringSelectMenuBuilder,
 } from "discord.js";
-import { getCategories, getColors } from "../../lib/config.js";
+import { getAllCategories, getColors } from "../../lib/config.js";
 import { getPool } from "../../lib/database.js";
 
 export const data = new SlashCommandBuilder()
@@ -39,7 +39,7 @@ export async function execute(interaction, client) {
         }
 
         const ticket = tickets[0];
-        const categories = getCategories();
+        const categories = getAllCategories();
         const currentCategory = categories.find(c => c.id === ticket.category_id);
 
         // Criar select menu com as categorias disponíveis
