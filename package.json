@@ -1,7 +1,7 @@
 {
-    "name": "fozbot-mta",
+    "name": "ticketbot-discord",
     "version": "1.0.0",
-    "description": "Bot de tickets para MTA em Discord",
+    "description": "Sistema de tickets para Discord com categorias configuráveis, transcrições, avaliações e fechamento por inatividade.",
     "main": "src/index.js",
     "type": "module",
     "scripts": {
@@ -11,12 +11,18 @@
     },
     "keywords": [
         "discord",
-        "bot",
-        "mta",
-        "tickets"
+        "discord-bot",
+        "discord-js",
+        "tickets",
+        "support",
+        "mysql"
     ],
-    "author": "",
+    "author": "Ryan (https://github.com/ryanbworks)",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ryanbworks/TicketBot-discord.git"
+    },
     "dependencies": {
         "discord-html-transcripts": "^3.2.0",
         "discord.js": "^14.16.3",

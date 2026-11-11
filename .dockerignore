@@ -1,6 +1,5 @@
 # Node modules
 node_modules/
-web/node_modules/
 
 # Logs
 *.log
@@ -14,7 +13,6 @@ yarn-error.log*
 .env.production
 
 # Build
-web/dist/
 dist/
 build/
 
@@ -33,6 +31,7 @@ data/*.db-wal
 .DS_Store
 Thumbs.db
 
-# Git
+# Git and CI
 .git/
 .gitignore
+.github/
