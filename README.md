@@ -1,6 +1,6 @@
-# TicketBot
+# Discord Ticket System
 
-[![CI](https://github.com/ryanbworks/TicketBot-discord/actions/workflows/ci.yml/badge.svg)](https://github.com/ryanbworks/TicketBot-discord/actions/workflows/ci.yml)
+[![CI](https://github.com/ryanbworks/discord-ticket-system/actions/workflows/ci.yml/badge.svg)](https://github.com/ryanbworks/discord-ticket-system/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![Node.js 22](https://img.shields.io/badge/Node.js-22-339933?logo=nodedotjs&logoColor=white)
 ![discord.js 14](https://img.shields.io/badge/discord.js-14-5865F2?logo=discord&logoColor=white)
@@ -56,8 +56,8 @@ Node.js 22 · discord.js 14 · MySQL 8 (`mysql2`) · YAML para configuração ·
 ### Configuração
 
 ```bash
-git clone https://github.com/ryanbworks/TicketBot-discord.git
-cd TicketBot-discord
+git clone https://github.com/ryanbworks/discord-ticket-system.git
+cd discord-ticket-system
 cp .env.example .env    # token, IDs do Discord e acesso ao MySQL
 ```
 

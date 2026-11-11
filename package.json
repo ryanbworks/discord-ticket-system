@@ -1,5 +1,5 @@
 {
-    "name": "ticketbot-discord",
+    "name": "discord-ticket-system",
     "version": "1.0.0",
     "description": "Sistema de tickets para Discord com categorias configuráveis, transcrições, avaliações e fechamento por inatividade.",
     "main": "src/index.js",
@@ -21,7 +21,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ryanbworks/TicketBot-discord.git"
+        "url": "git+https://github.com/ryanbworks/discord-ticket-system.git"
     },
     "dependencies": {
         "discord-html-transcripts": "^3.2.0",
